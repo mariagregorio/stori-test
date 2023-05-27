@@ -8,5 +8,6 @@ This app will send an email with the balance summary from data.csv file, and sav
 
 ## Start app
 
-Run in root dir
-`docker-compose up`
+1. Create .env file
+2. Run in root dir
+   `docker-compose up`

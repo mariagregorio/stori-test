@@ -2,7 +2,6 @@ import boto3
 from botocore.exceptions import ClientError
 import os
 from dotenv import load_dotenv
-import datetime
 from itertools import groupby
 import calendar
 
@@ -58,44 +57,41 @@ def create_email_body(data):
     body = "<html><head></head><body><a href=\"https://www.storicard.com/\" target=\"_blank\"><img src=\"https://i.ibb.co/VSgm677/complete-logo-0f6b7ce5.png\" alt=\"Stori\"></a><p>Total balance: <b>$ {}</b></p><hr>".format(total) + monthly_summary_string + "</body></html>"
     return body
 
-SENDER = "Stori <storitest2@gmail.com>"
-RECIPIENT = "storitest2@gmail.com"
-SUBJECT = "Your Stori Balance"
-CHARSET = "UTF-8"
-
-load_dotenv()
-
-client = boto3.client('ses',
-                        region_name=os.getenv("AWS_REGION"),
-                        aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
-                        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"))
-
 def send_email(data):
-  body = create_email_body(data)
-  try:
-    response = client.send_email(
-        Destination={
-            'ToAddresses': [
-                RECIPIENT,
-            ],
-        },
-        Message={
-            'Body': {
-                'Html': {
-                    'Charset': CHARSET,
-                    'Data': body,
+    load_dotenv()
+    client = boto3.client('ses',
+                            region_name=os.getenv("AWS_REGION"),
+                            aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
+                            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"))
+    sender = "Stori <storitest2@gmail.com>"
+    subject = "Your Stori Balance"
+    charset = "UTF-8"
+    recipient = "storitest2@gmail.com"
+    body = create_email_body(data)
+    try:
+        response = client.send_email(
+            Destination={
+                'ToAddresses': [
+                    recipient,
+                ],
+            },
+            Message={
+                'Body': {
+                    'Html': {
+                        'Charset': charset,
+                        'Data': body,
+                    },
+                },
+                'Subject': {
+                    'Charset': charset,
+                    'Data': subject,
                 },
             },
-            'Subject': {
-                'Charset': CHARSET,
-                'Data': SUBJECT,
-            },
-        },
-        Source=SENDER,
-    )
-  except ClientError as e:
-      print(e.response['Error']['Message'])
-  else:
-      print("Email sent"),
-      print("MessageId", response['MessageId'])
-  return response
+            Source=sender,
+        )
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        print("Email sent"),
+        print("MessageId", response['MessageId'])
+        return response
