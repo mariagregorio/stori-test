@@ -12,4 +12,5 @@ Contact developer to get a new email address added to SES verified identities.
 
 1. Create .env file (use .env.example for guidance)
 2. Run in root dir
+   `docker-compose build`
    `docker-compose up`

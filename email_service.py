@@ -130,4 +130,4 @@ def send_email(data):
         else:
             print("Email sent to", recipient),
             print("MessageId", response['MessageId'])
-            return response
+    return
