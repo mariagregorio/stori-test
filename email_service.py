@@ -88,6 +88,12 @@ def create_email_body(data):
     return body
 
 
+recipients = ["storitest2@gmail.com",
+              "airam.greg@gmail.com",
+              "alan.ramirez@storicard.com",
+              "ignacio.romero@storicard.com"]
+
+
 def send_email(data):
     load_dotenv()
     client = boto3.client(
@@ -98,32 +104,30 @@ def send_email(data):
     sender = "Stori <storitest2@gmail.com>"
     subject = "Your Stori Balance"
     charset = "UTF-8"
-    recipient = "storitest2@gmail.com"
     body = create_email_body(data)
-    try:
-        response = client.send_email(
-            Destination={
-                'ToAddresses': [
-                    recipient,
-                ],
-            },
-            Message={
-                'Body': {
-                    'Html': {
+    for recipient in recipients:
+        try:
+            response = client.send_email(
+                Destination={
+                    'ToAddresses': [recipient],
+                },
+                Message={
+                    'Body': {
+                        'Html': {
+                            'Charset': charset,
+                            'Data': body,
+                        },
+                    },
+                    'Subject': {
                         'Charset': charset,
-                        'Data': body,
+                        'Data': subject,
                     },
                 },
-                'Subject': {
-                    'Charset': charset,
-                    'Data': subject,
-                },
-            },
-            Source=sender,
-        )
-    except ClientError as e:
-        print(e.response['Error']['Message'])
-    else:
-        print("Email sent"),
-        print("MessageId", response['MessageId'])
-        return response
+                Source=sender,
+            )
+        except ClientError as e:
+            print(e.response['Error']['Message'])
+        else:
+            print("Email sent to", recipient),
+            print("MessageId", response['MessageId'])
+            return response
