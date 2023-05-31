@@ -14,3 +14,13 @@ Contact developer to get a new email address added to SES verified identities.
 2. Run in root dir
    `docker-compose build`
    `docker-compose up`
+
+### Check for records saved to DB in mysql docker container
+
+While container is still running run:
+
+1. `docker exec -it storytestdb bash -l`
+2. `mysql --user=root --password`
+   Enter password for root (from .env) and run the following sql query
+3. `USE stori;`
+4. `SELECT * FROM Transactions;`
